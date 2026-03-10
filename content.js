@@ -276,28 +276,30 @@
         <div id="sl-card-area">
           <div id="sl-hint-remove" class="sl-hint">✕ REMOVE</div>
           <div id="sl-hint-keep" class="sl-hint">♥ KEEP</div>
-          <div id="sl-card">
-            <div id="sl-card-inner">
-              <div id="sl-thumb-wrap">
-                <img id="sl-thumb" src="" alt="">
-                <div id="sl-duration-badge"></div>
-                <div id="sl-overlay-label" class="sl-overlay-label"></div>
-              </div>
-              <div id="sl-info">
-                <div id="sl-title"></div>
-                <div id="sl-channel"></div>
+          <div id="sl-card-stack">
+            <div id="sl-card">
+              <div id="sl-card-inner">
+                <div id="sl-thumb-wrap">
+                  <img id="sl-thumb" src="" alt="">
+                  <div id="sl-duration-badge"></div>
+                  <div id="sl-overlay-label" class="sl-overlay-label"></div>
+                </div>
+                <div id="sl-info">
+                  <div id="sl-title"></div>
+                  <div id="sl-channel"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div id="sl-next-peek">
-            <div id="sl-next-card-inner">
-              <div id="sl-next-thumb-wrap">
-                <img id="sl-next-thumb" src="" alt="">
-                <div id="sl-next-duration-badge"></div>
-              </div>
-              <div id="sl-next-info">
-                <div id="sl-next-title"></div>
-                <div id="sl-next-channel"></div>
+            <div id="sl-next-peek">
+              <div id="sl-next-card-inner">
+                <div id="sl-next-thumb-wrap">
+                  <img id="sl-next-thumb" src="" alt="">
+                  <div id="sl-next-duration-badge"></div>
+                </div>
+                <div id="sl-next-info">
+                  <div id="sl-next-title"></div>
+                  <div id="sl-next-channel"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -391,10 +393,19 @@
     document.getElementById('sl-overlay-label').className   = 'sl-overlay-label';
     document.getElementById('sl-overlay-label').textContent = '';
 
-    // Reset card to default state
+    // Reset card to default state, then animate in from next card scale
     card.style.transition = 'none';
-    card.style.transform  = '';
-    card.style.opacity    = '1';
+    card.style.transform  = 'scale(0.97)';
+    card.style.opacity    = '0.85';
+
+    // Trigger scale-up animation (next card becoming current)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        card.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+        card.style.transform = 'scale(1)';
+        card.style.opacity = '1';
+      });
+    });
 
     // Update next card preview (full details)
     const peek = document.getElementById('sl-next-peek');
