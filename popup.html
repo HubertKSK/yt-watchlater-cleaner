@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 280px;
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ff0000, #cc0000);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(10px, 10px); }
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 28px;
+      letter-spacing: 2px;
+      position: relative;
+    }
+
+    .logo span { color: rgba(255,255,255,0.6); font-size: 14px; display: block; letter-spacing: 4px; margin-top: -4px; }
+
+    .body { padding: 20px; }
+
+    .desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      border-left: 2px solid #ff0000;
+      padding-left: 10px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #ff0000;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #cc0000; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: #1a1a1a;
+      color: #ccc;
+      border: 1px solid #333;
+    }
+
+    .btn-secondary:hover { background: #222; color: #fff; }
+
+    .shortcuts {
+      background: #111;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #222;
+    }
+
+    .shortcuts h4 {
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .shortcut-row span { font-size: 12px; color: #888; }
+
+    .key {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: #ccc;
+      font-family: monospace;
+    }
+
+    .status {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #333;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .dot.active { background: #00cc44; box-shadow: 0 0 6px #00cc44; animation: pulse 1.5s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      SWIPE LATER
+      <span>WATCH LATER CLEANER</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <p class="desc">
+      Navigate to your YouTube Watch Later playlist, then launch the swiper to go through videos one by one.
+    </p>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="launch">
+        ▶ Launch Swiper
+      </button>
+      <button class="btn btn-secondary" id="gotoWL">
+        📋 Go to Watch Later
+      </button>
+    </div>
+
+    <div class="shortcuts">
+      <h4>Keyboard Shortcuts</h4>
+      <div class="shortcut-row">
+        <span>⬅ Remove video</span>
+        <kbd class="key">←</kbd>
+      </div>
+      <div class="shortcut-row">
+        <span>➡ Keep video</span>
+        <kbd class="key">→</kbd>
+      </div>
+      <div class="shortcut-row">
+        <span>Skip / unsure</span>
+        <kbd class="key">↑</kbd>
+      </div>
+      <div class="shortcut-row">
+        <span>Undo last</span>
+        <kbd class="key">Z</kbd>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Open Watch Later to begin</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
