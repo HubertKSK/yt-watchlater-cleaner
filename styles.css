@@ -110,7 +110,7 @@
 /* ── Card Area ──────────────────────────────────────────────────────────── */
 #sl-card-area {
   position: relative;
-  padding: 20px 20px 12px;
+  padding: 0px;
   flex: 1;
   display: flex;
   align-items: center;
@@ -152,7 +152,6 @@
   will-change: transform, opacity;
   position: relative;
   z-index: 5;
-  transform: scale(1);
 }
 
 #sl-card:active { cursor: grabbing; }
@@ -269,10 +268,10 @@
   left: 0;
   z-index: 1;
   opacity: 1;
-  transform: scale(1);
+  transform: scale(0.97);
   transform-origin: center center;
   pointer-events: none;
-  transition: none;
+  transition: transform 0.1s ease, opacity 0.1s ease;
 }
 
 #sl-next-card-inner {
@@ -400,7 +399,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
-  padding: 0 20px 12px;
+  padding: 20px 20px 12px;
 }
 
 .sl-action-btn {

@@ -391,7 +391,7 @@
     document.getElementById('sl-overlay-label').className   = 'sl-overlay-label';
     document.getElementById('sl-overlay-label').textContent = '';
 
-    // Reset card to default state (no animation - next card already visible behind)
+    // Reset card to default state
     card.style.transition = 'none';
     card.style.transform  = '';
     card.style.opacity    = '1';
@@ -405,6 +405,12 @@
       document.getElementById('sl-next-channel').textContent = nextVideo.channel;
       document.getElementById('sl-next-duration-badge').textContent = nextVideo.duration;
       peek.style.display = 'block';
+
+      // Trigger animation to preview state
+      requestAnimationFrame(() => {
+        peek.style.transform = 'scale(0.97)';
+        peek.style.opacity = '1';
+      });
     } else {
       peek.style.display = 'none';
     }
