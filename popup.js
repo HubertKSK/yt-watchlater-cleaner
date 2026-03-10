@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusText.textContent = 'Watch Later page detected ✓';
     launchBtn.style.background = '#00aa33';
   } else {
-    statusText.textContent = 'Navigate to Watch Later first';
+    statusText.textContent = 'Click "Go to Watch Later" below';
   }
 
   launchBtn.addEventListener('click', async () => {

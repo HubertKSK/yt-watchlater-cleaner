@@ -289,7 +289,18 @@
               </div>
             </div>
           </div>
-          <div id="sl-next-peek"></div>
+          <div id="sl-next-peek">
+            <div id="sl-next-card-inner">
+              <div id="sl-next-thumb-wrap">
+                <img id="sl-next-thumb" src="" alt="">
+                <div id="sl-next-duration-badge"></div>
+              </div>
+              <div id="sl-next-info">
+                <div id="sl-next-title"></div>
+                <div id="sl-next-channel"></div>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="sl-removing-toast">
           <span class="sl-spinner">⟳</span> Removing from playlist…
@@ -380,13 +391,19 @@
     document.getElementById('sl-overlay-label').className   = 'sl-overlay-label';
     document.getElementById('sl-overlay-label').textContent = '';
 
+    // Reset card to default state (no animation - next card already visible behind)
     card.style.transition = 'none';
     card.style.transform  = '';
     card.style.opacity    = '1';
 
+    // Update next card preview (full details)
     const peek = document.getElementById('sl-next-peek');
     if (index + 1 < videos.length) {
-      peek.style.backgroundImage = `url(${videos[index + 1].thumbnail})`;
+      const nextVideo = videos[index + 1];
+      document.getElementById('sl-next-thumb').src = nextVideo.thumbnail;
+      document.getElementById('sl-next-title').textContent = nextVideo.title;
+      document.getElementById('sl-next-channel').textContent = nextVideo.channel;
+      document.getElementById('sl-next-duration-badge').textContent = nextVideo.duration;
       peek.style.display = 'block';
     } else {
       peek.style.display = 'none';
@@ -430,14 +447,28 @@
     }
     card.style.opacity = '0';
 
-    saveDecision(video.id, action);
-    sessionDecisions.push({ ...video, action });
+    // For keep/skip: save immediately (safe actions that don't modify YouTube)
+    if (action !== 'remove') {
+      saveDecision(video.id, action);
+      sessionDecisions.push({ ...video, action });
+    }
 
+    // For remove: kick off removal in background, but don't block the UI
     if (action === 'remove') {
       removingToast.classList.add('sl-toast-visible');
+
+      // Start removal in background (non-blocking)
       removeVideoNow(video).then(success => {
         removingToast.classList.remove('sl-toast-visible');
-        if (!success) showWarning(`⚠ Couldn't remove "${video.title.slice(0, 40)}" — remove manually`);
+
+        if (success) {
+          // Only mark as removed if it actually worked
+          saveDecision(video.id, action);
+          sessionDecisions.push({ ...video, action });
+        } else {
+          // Show warning and DON'T save decision - video will reappear on next launch
+          showWarning(`⚠ Couldn't remove "${video.title.slice(0, 40)}" — scroll down and try again later`);
+        }
       });
     }
 
@@ -499,8 +530,8 @@
     document.getElementById('sl-hint-remove').style.opacity = 0;
     document.getElementById('sl-hint-keep').style.opacity   = 0;
 
-    if (diff > 80)       decide('keep');
-    else if (diff < -80) decide('remove');
+    if (diff > 60)       decide('keep');
+    else if (diff < -60) decide('remove');
     else {
       const card = document.getElementById('sl-card');
       card.style.transition = 'transform 0.3s ease';
@@ -581,9 +612,19 @@
     const allStats = getMemoryStats();
 
     if (videos.length === 0) {
-      const msg = allStats.total > 0
-        ? `All visible videos already decided (${allStats.total} total). Scroll down to load more, or reset history.`
-        : 'No Watch Later videos found. Make sure you\'re on youtube.com/playlist?list=WL';
+      const mem = loadMemory();
+      const decidedCount = Object.keys(mem).length;
+      const totalInMetadata = Object.keys(videoMetaMap).length;
+
+      let msg;
+      if (decidedCount > 0 && totalInMetadata > 0) {
+        msg = `✓ All ${totalInMetadata} loaded videos decided! Scroll down to load more, then click your extension icon → "Launch Swiper" again.`;
+      } else if (decidedCount > 0) {
+        msg = `✓ All visible videos decided (${decidedCount} total). Scroll down to load more, or reset history below.`;
+      } else {
+        msg = '⚠ No Watch Later videos found. Make sure you\'re on youtube.com/playlist?list=WL';
+      }
+
       document.getElementById('sl-loading-text').textContent = msg;
       return;
     }
